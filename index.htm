@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Pembelajaran Interaktif: Fungsi Logaritma</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Chart.js for Graph Plotting -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- KaTeX for Math Equations Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+
+    <!-- Google Fonts (Inter & Plus Jakarta Sans) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        h1, h2, h3, .font-heading {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .tab-btn.active {
+            background-color: #3b82f6;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .gradient-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #0d9488 100%);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between custom-scrollbar">
+
+    <header class="gradient-header text-white shadow-xl sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="p-3 bg-white/10 rounded-2xl backdrop-blur-md border border-white/20">
+                        <i class="fa-solid me-1 fa-square-root-variable text-2xl text-amber-300"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs uppercase tracking-widest text-blue-200 font-semibold">Modul Pembelajaran Mendalam</span>
+                        <h1 class="text-xl sm:text-2xl font-bold tracking-tight">Fungsi Logaritma Interaktif</h1>
+                    </div>
+                </div>
+                <!-- Student Progress Indicator -->
+                <div class="flex items-center bg-white/10 px-4 py-2 rounded-xl backdrop-blur-md border border-white/15 text-sm">
+                    <i class="fa-solid fa-graduation-cap text-amber-300 mr-2 text-lg"></i>
+                    <div>
+                        <div class="text-xs text-blue-100">Progres Pemahaman</div>
+                        <div class="w-32 bg-blue-950/50 rounded-full h-2 mt-1 overflow-hidden">
+                            <div id="progressBar" class="bg-amber-400 h-full w-0 transition-all duration-500"></div>
+                        </div>
+                    </div>
+                    <span id="progressPercent" class="ml-3 font-bold text-amber-300 text-xs">0%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="bg-blue-900/40 backdrop-blur-md border-t border-white/10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto space-x-2 py-2 custom-scrollbar">
+                <button onclick="switchTab('tab-apersepsi')" id="btn-tab-apersepsi" class="tab-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap flex items-center">
+                    <i class="fa-solid fa-compass mr-2"></i>1. Apersepsi & Mindset
+                </button>
+                <button onclick="switchTab('tab-konsep')" id="btn-tab-konsep" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm text-blue-100 hover:bg-white/10 transition-all duration-200 whitespace-nowrap flex items-center">
+                    <i class="fa-solid fa-chart-line mr-2"></i>2. Eksplorasi Grafik
+                </button>
+                <button onclick="switchTab('tab-konteks')" id="btn-tab-konteks" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm text-blue-100 hover:bg-white/10 transition-all duration-200 whitespace-nowrap flex items-center">
+                    <i class="fa-solid fa-earth-americas mr-2"></i>3. Laboratorium Kontekstual
+                </button>
+                <button onclick="switchTab('tab-hots')" id="btn-tab-hots" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm text-blue-100 hover:bg-white/10 transition-all duration-200 whitespace-nowrap flex items-center">
+                    <i class="fa-solid fa-brain mr-2"></i>4. Studio Soal HOTS
+                </button>
+                <button onclick="switchTab('tab-refleksi')" id="btn-tab-refleksi" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm text-blue-100 hover:bg-white/10 transition-all duration-200 whitespace-nowrap flex items-center">
+                    <i class="fa-solid fa-pen-ruler mr-2"></i>5. Refleksi & Jurnal
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Canvas -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <section id="tab-apersepsi" class="tab-content block space-y-6">
+            <!-- Hero Hook -->
+            <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 bg-gradient-to-br from-white via-blue-50/30 to-indigo-50/50">
+                <div class="max-w-3xl">
+                    <span class="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full uppercase tracking-wider">Pembelajaran Mendalam (Deep Learning)</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-3">Mengapa Mengukur Angka Raksasa Membutuhkan Skala Logaritma?</h2>
+                    <p class="text-slate-600 mt-3 text-sm sm:text-base leading-relaxed">
+                        Pernahkah Anda berpikir bagaimana para ilmuwan membandingkan energi gempa bumi yang jutaan kali lipat lebih kuat, atau suara bisikan kecil versus ledakan pesawat jet? Jika kita menggunakan skala linier biasa, grafik kita akan sepanjang ratusan kilometer! Di sinilah <strong>Fungsi Logaritma</strong> bekerja sebagai "penyederhana skala" alami.
+                    </p>
+                </div>
+
+                <!-- Interactive Comparison Simulator -->
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-800 flex items-center text-sm">
+                            <i class="fa-solid fa-[#2563eb] fa-ruler-horizontal text-blue-600 mr-2"></i>
+                            Skala Linier (Tampilan Fisik Nyata)
+                        </h3>
+                        <p class="text-xs text-slate-500 mt-1">Garis memanjang sebanding dengan nilai asli.</p>
+                        <div class="mt-4 space-y-3">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1 font-medium"><span>Bisikan Halus ($10^2$)</span> <span>100 unit</span></div>
+                                <div class="w-full bg-slate-100 rounded-full h-3">
+                                    <div class="bg-blue-400 h-full rounded-full" style="width: 1%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1 font-medium"><span>Percakapan Normal ($10^6$)</span> <span>1.000.000 unit</span></div>
+                                <div class="w-full bg-slate-100 rounded-full h-3">
+                                    <div class="bg-blue-500 h-full rounded-full" style="width: 10%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1 font-medium"><span>Suara Pesawat Jet ($10^{13}$)</span> <span>10.000.000.000.000 unit</span></div>
+                                <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                                    <div class="bg-rose-500 h-full rounded-full" style="width: 100%"></div>
+                                </div>
+                                <p class="text-[10px] text-rose-500 mt-1 italic">*Skala linier kewalahan menampilkan angka 10 triliun ini secara berdampingan!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-800 flex items-center text-sm">
+                            <i class="fa-solid fa-compress text-emerald-600 mr-2"></i>
+                            Skala Logaritma Basis 10 ($\log_{10} x$)
+                        </h3>
+                        <p class="text-xs text-slate-500 mt-1">Mengubah eksponen/pangkat menjadi skala sederhana.</p>
+                        <div class="mt-4 space-y-3">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1 font-medium"><span>Bisikan Halus ($\log_{10} 10^2$)</span> <span class="font-bold text-emerald-600">2 Bels (20 dB)</span></div>
+                                <div class="w-full bg-slate-100 rounded-full h-3">
+                                    <div class="bg-emerald-400 h-full rounded-full" style="width: 15%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1 font-medium"><span>Percakapan Normal ($\log_{10} 10^6$)</span> <span class="font-bold text-emerald-600">6 Bels (60 dB)</span></div>
+                                <div class="w-full bg-slate-100 rounded-full h-3">
+                                    <div class="bg-emerald-500 h-full rounded-full" style="width: 46%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1 font-medium"><span>Suara Pesawat Jet ($\log_{10} 10^{13}$)</span> <span class="font-bold text-emerald-600">13 Bels (130 dB)</span></div>
+                                <div class="w-full bg-slate-100 rounded-full h-3">
+                                    <div class="bg-emerald-600 h-full rounded-full" style="width: 100%"></div>
+                                </div>
+                                <p class="text-[10px] text-emerald-600 mt-1 font-medium">✓ Sangat rapi, mudah dipahami, dan ramah representasi visual!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Essential Definition Card -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center font-bold mb-4">1</div>
+                        <h4 class="font-bold text-slate-800 mb-2">Definisi Dasar</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Logaritma adalah invers (kebalikan) dari fungsi eksponen.
+                        </p>
+                        <div class="my-4 p-3 bg-slate-50 rounded-xl text-center text-sm font-semibold text-blue-900 border border-slate-200/60" id="def-math-1">
+                            $$a^c = b \iff \log_a b = c$$
+                        </div>
+                    </div>
+                    <span class="text-[11px] text-slate-400">Syarat: $a > 0$, $a \neq 1$, dan $b > 0$.</span>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold mb-4">2</div>
+                        <h4 class="font-bold text-slate-800 mb-2">Bentuk Umum Fungsi</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Fungsi logaritma pemetaan bilangan real positif ke bilangan real.
+                        </p>
+                        <div class="my-4 p-3 bg-slate-50 rounded-xl text-center text-sm font-semibold text-indigo-900 border border-slate-200/60" id="def-math-2">
+                            $$f(x) = a \cdot \log_b(x - c) + d$$
+                        </div>
+                    </div>
+                    <span class="text-[11px] text-slate-400">Domain: $x > c$, Asimtot Tegak: $x = c$.</span>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold mb-4">3</div>
+                        <h4 class="font-bold text-slate-800 mb-2">Sifat Utama Operasi</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            Kunci penyederhanaan perhitungan logaritma kompleks.
+                        </p>
+                        <div class="my-3 text-xs space-y-1.5 text-slate-700 bg-slate-50 p-3 rounded-xl border border-slate-200/60">
+                            <div>• $\log_a(x \cdot y) = \log_a x + \log_a y$</div>
+                            <div>• $\log_a(x / y) = \log_a x - \log_a y$</div>
+                            <div>• $\log_a(x^n) = n \cdot \log_a x$</div>
+                        </div>
+                    </div>
+                    <button onclick="markStepRead('apersepsi')" class="w-full mt-2 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold transition">
+                        Tandai Selesai & Lanjut <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-konsep" class="tab-content hidden space-y-6">
+            <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80">
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <!-- Graph Controls Panel -->
+                    <div class="w-full lg:w-1/3 space-y-6">
+                        <div>
+                            <span class="px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-full uppercase tracking-wider">Laboratorium Visual</span>
+                            <h2 class="text-xl font-bold text-slate-800 mt-2">Eksplorasi Transformatif Grafik</h2>
+                            <p class="text-xs text-slate-500 mt-1">Ubah nilai parameter di bawah dan amati perubahan bentuk kurva serta asimtotnya secara real-time.</p>
+                        </div>
+
+                        <!-- Mathematical Equation Display -->
+                        <div class="p-4 bg-slate-900 text-amber-300 rounded-2xl text-center shadow-inner font-mono text-base font-bold" id="math-live-eq">
+                            f(x) = 1 · log₂(x - 0) + 0
+                        </div>
+
+                        <!-- Sliders -->
+                        <div class="space-y-4 bg-white p-4 rounded-2xl border border-slate-200">
+                            <!-- Basis (b) -->
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                    <label for="slider-b">Basis Logaritma ($b$):</label>
+                                    <span id="val-b" class="text-blue-600 font-bold">2</span>
+                                </div>
+                                <input id="slider-b" type="range" min="0.2" max="5" step="0.1" value="2" class="w-full accent-blue-600 cursor-pointer" oninput="updateGraph()">
+                                <div class="flex justify-between text-[10px] text-slate-400 mt-0.5">
+                                    <span>Monoton Turun (0 < b < 1)</span>
+                                    <span>Monoton Naik (b > 1)</span>
+                                </div>
+                            </div>
+
+                            <!-- Amplitudo/Pengali (a) -->
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                    <label for="slider-a">Skala Vertikal ($a$):</label>
+                                    <span id="val-a" class="text-blue-600 font-bold">1</span>
+                                </div>
+                                <input id="slider-a" type="range" min="-3" max="3" step="0.5" value="1" class="w-full accent-blue-600 cursor-pointer" oninput="updateGraph()">
+                            </div>
+
+                            <!-- Pergeseran Horizontal (c) -->
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                    <label for="slider-c">Pergeseran Horisontal ($c$):</label>
+                                    <span id="val-c" class="text-blue-600 font-bold">0</span>
+                                </div>
+                                <input id="slider-c" type="range" min="-4" max="4" step="0.5" value="0" class="w-full accent-blue-600 cursor-pointer" oninput="updateGraph()">
+                            </div>
+
+                            <!-- Pergeseran Vertikal (d) -->
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1">
+                                    <label for="slider-d">Pergeseran Vertikal ($d$):</label>
+                                    <span id="val-d" class="text-blue-600 font-bold">0</span>
+                                </div>
+                                <input id="slider-d" type="range" min="-4" max="4" step="0.5" value="0" class="w-full accent-blue-600 cursor-pointer" oninput="updateGraph()">
+                            </div>
+                        </div>
+
+                        <!-- Graph Properties Dynamic Info -->
+                        <div class="bg-blue-50/60 border border-blue-100 rounded-2xl p-4 text-xs space-y-2">
+                            <div class="font-bold text-blue-900 flex items-center">
+                                <i class="fa-solid fa-circle-info mr-1.5"></i> Karakteristik Grafik Saat Ini:
+                            </div>
+                            <div class="flex justify-between text-slate-600"><span>Domain:</span> <span id="info-domain" class="font-mono font-semibold text-slate-800">x > 0</span></div>
+                            <div class="flex justify-between text-slate-600"><span>Range:</span> <span class="font-mono font-semibold text-slate-800">(-∞, +∞)</span></div>
+                            <div class="flex justify-between text-slate-600"><span>Asimtot Tegak:</span> <span id="info-asymptote" class="font-mono font-semibold text-rose-600">x = 0</span></div>
+                            <div class="flex justify-between text-slate-600"><span>Titik Potong Sumbu X:</span> <span id="info-xintercept" class="font-mono font-semibold text-emerald-600">(1.00, 0)</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Canvas Area -->
+                    <div class="w-full lg:w-2/3 bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-inner flex flex-col justify-between">
+                        <div class="relative h-80 sm:h-[400px] w-full">
+                            <canvas id="logChart"></canvas>
+                        </div>
+                        <div class="mt-4 flex flex-wrap gap-2 text-[11px] text-slate-500 justify-between items-center border-t border-slate-100 pt-3">
+                            <span class="flex items-center"><span class="w-3 h-3 bg-blue-600 rounded-full mr-1 inline-block"></span> Kurva Logaritma $f(x)$</span>
+                            <span class="flex items-center"><span class="w-3 h-0.5 bg-rose-500 border border-dashed mr-1 inline-block"></span> Garis Asimtot Tegak</span>
+                            <button onclick="resetGraphParams()" class="text-xs text-slate-600 hover:text-blue-600 underline flex items-center">
+                                <i class="fa-solid fa-rotate-left mr-1"></i> Reset Nilai Awal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-konteks" class="tab-content hidden space-y-6">
+            <div class="text-center max-w-2xl mx-auto mb-4">
+                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-full uppercase tracking-wider">Aplikasi Dunia Nyata</span>
+                <h2 class="text-2xl font-extrabold text-slate-800 mt-2">Laboratorium Kontekstual Logaritma</h2>
+                <p class="text-xs sm:text-sm text-slate-600 mt-1">Uji coba fenomena sains dan kehidupan sehari-hari yang menggunakan prinsip fungsi logaritma.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <!-- SIMULATOR 1: Richter Scale Earthquake -->
+                <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between hover:shadow-md transition">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="p-3 bg-amber-100 text-amber-700 rounded-2xl">
+                                <i class="fa-solid fa-house-crack text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-base">Skala Richter (Gempa)</h3>
+                                <p class="text-[11px] text-slate-500">Magnitudo Gempa Bumi</p>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-slate-600 mb-4 leading-relaxed">
+                            Kekuatan gempa diukur dengan formula: $M = \log_{10}\left(\frac{A}{A_0}\right)$, dengan $A$ amplitudo gelombang seismik.
+                        </p>
+
+                        <!-- Interactive Control -->
+                        <div class="space-y-4 bg-amber-50/50 p-4 rounded-2xl border border-amber-100">
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold mb-1 text-slate-700">
+                                    <span>Magnitudo Gempa A:</span>
+                                    <span id="val-richter-a" class="text-amber-700 font-bold">5.0 MW</span>
+                                </div>
+                                <input id="slider-richter-a" type="range" min="1" max="9" step="0.1" value="5.0" class="w-full accent-amber-600 cursor-pointer" oninput="calculateRichter()">
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold mb-1 text-slate-700">
+                                    <span>Magnitudo Gempa B:</span>
+                                    <span id="val-richter-b" class="text-amber-700 font-bold">7.0 MW</span>
+                                </div>
+                                <input id="slider-richter-b" type="range" min="1" max="9" step="0.1" value="7.0" class="w-full accent-amber-600 cursor-pointer" oninput="calculateRichter()">
+                            </div>
+                        </div>
+
+                        <!-- Result Display -->
+                        <div class="mt-4 p-3 bg-amber-600 text-white rounded-2xl text-center">
+                            <div class="text-[10px] uppercase tracking-wider text-amber-200 font-medium">Rasio Keampuhan Gelombang</div>
+                            <div id="result-richter" class="text-lg font-extrabold mt-0.5">100.00x Lipat</div>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-4 italic text-center">Setiap kenaikan 1 skala berarti ampltitudo 10x lipat!</p>
+                </div>
+
+                <!-- SIMULATOR 2: pH Scale Chemistry -->
+                <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between hover:shadow-md transition">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="p-3 bg-teal-100 text-teal-700 rounded-2xl">
+                                <i class="fa-solid fa-flask text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-base">Derajat Keasaman (pH)</h3>
+                                <p class="text-[11px] text-slate-500">Konsentrasi Ion Hidrogen</p>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-slate-600 mb-4 leading-relaxed">
+                            Tingkat keasaman larutan dirumuskan dengan fungsi logaritma negatif: $\text{pH} = -\log_{10}[H^+]$.
+                        </p>
+
+                        <!-- Interactive Control -->
+                        <div class="space-y-4 bg-teal-50/50 p-4 rounded-2xl border border-teal-100">
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold mb-1 text-slate-700">
+                                    <span>Konsentrasi $[H^+]$:</span>
+                                    <span id="val-ph-h" class="text-teal-700 font-bold font-mono">1.0e-3 M</span>
+                                </div>
+                                <input id="slider-ph-h" type="range" min="1" max="14" step="0.1" value="3.0" class="w-full accent-teal-600 cursor-pointer" oninput="calculatePH()">
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Color pH Bar -->
+                        <div id="ph-badge" class="mt-4 p-4 rounded-2xl text-white text-center transition-colors duration-300 shadow-md">
+                            <div class="text-[10px] uppercase tracking-wider opacity-80 font-medium">Nilai pH & Sifat Larutan</div>
+                            <div id="result-ph-val" class="text-2xl font-extrabold my-0.5">3.00</div>
+                            <div id="result-ph-type" class="text-xs font-semibold uppercase tracking-widest">Asam Kuat</div>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-4 italic text-center">Contoh: pH 3 = Asam lambung/cuka, pH 7 = Air Murni</p>
+                </div>
+
+                <!-- SIMULATOR 3: Sound Intensity Decibels -->
+                <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 flex flex-col justify-between hover:shadow-md transition">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="p-3 bg-purple-100 text-purple-700 rounded-2xl">
+                                <i class="fa-solid fa-volume-high text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-slate-800 text-base">Taraf Intensitas Bunyi</h3>
+                                <p class="text-[11px] text-slate-500">Skala Desibel (dB)</p>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-slate-600 mb-4 leading-relaxed">
+                            Taraf intensitas diukur dengan rumus: $TI = 10 \cdot \log_{10}\left(\frac{I}{I_0}\right)$ di mana $I_0 = 10^{-12} \text{ W/m}^2$.
+                        </p>
+
+                        <!-- Interactive Control -->
+                        <div class="space-y-4 bg-purple-50/50 p-4 rounded-2xl border border-purple-100">
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold mb-1 text-slate-700">
+                                    <span>Pangkat Intensitas ($10^x \text{ W/m}^2$):</span>
+                                    <span id="val-sound-exp" class="text-purple-700 font-bold font-mono">10^-6</span>
+                                </div>
+                                <input id="slider-sound-exp" type="range" min="-12" max="2" step="1" value="-6" class="w-full accent-purple-600 cursor-pointer" oninput="calculateSound()">
+                            </div>
+                        </div>
+
+                        <!-- Result Display -->
+                        <div class="mt-4 p-4 bg-purple-600 text-white rounded-2xl text-center">
+                            <div class="text-[10px] uppercase tracking-wider text-purple-200 font-medium">Taraf Intensitas Bunyi</div>
+                            <div id="result-sound-db" class="text-2xl font-extrabold my-0.5">60 dB</div>
+                            <div id="result-sound-example" class="text-xs text-purple-200">Setara: Percakapan Normal di Ruangan</div>
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-4 italic text-center">Ambang batas nyeri pendengaran manusia ~120 dB</p>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="tab-hots" class="tab-content hidden space-y-6">
+            <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 pb-4 mb-6 gap-4">
+                    <div>
+                        <span class="px-3 py-1 bg-rose-100 text-rose-700 text-xs font-semibold rounded-full uppercase tracking-wider">Penaakulan Tinggi</span>
+                        <h2 class="text-2xl font-bold text-slate-800 mt-1">Studio Soal Kontekstual (HOTS)</h2>
+                        <p class="text-xs text-slate-500">Selesaikan soal studi kasus berbasis masalah nyata dengan umpan balik sistematis.</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="px-4 py-2 bg-slate-100 rounded-xl text-xs font-semibold text-slate-700">
+                            Skor Quiz: <span id="quizScoreText" class="text-rose-600 font-bold">0 / 40</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-6" id="quizContainer">
+                    <!-- Questions will be rendered dynamically via JavaScript for clean structure -->
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-refleksi" class="tab-content hidden space-y-6">
+            <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 max-w-3xl mx-auto">
+                <div class="text-center mb-6">
+                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-3 text-xl">
+                        <i class="fa-solid fa-journal-whills"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-800">Refleksi Pembelajaran Mendalam</h2>
+                    <p class="text-xs text-slate-500 mt-1">Gali pemahaman Anda kembali untuk mengonsolidasikan konsep fungsi logaritma ke dalam memori jangka panjang.</p>
+                </div>
+
+                <form id="reflectionForm" onsubmit="handleReflectionSubmit(event)" class="space-y-5">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">
+                            1. Mengapa skala logaritma lebih efektif dibanding skala linier dalam mengukur gempa bumi atau suara?
+                        </label>
+                        <textarea required id="ref-q1" rows="3" class="w-full p-3 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Tuliskan pemahaman konseptual Anda..."></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">
+                            2. Apa hubungan antara garis asimtot tegak pada grafik $f(x) = \log_b(x - c)$ dengan domain fungsinya?
+                        </label>
+                        <textarea required id="ref-q2" rows="3" class="w-full p-3 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Jelaskan keterkaitannya..."></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">
+                            3. Sebutkan satu aplikasi logaritma dalam kehidupan sehari-hari selain yang dipelajari di modul ini!
+                        </label>
+                        <input required type="text" id="ref-q3" class="w-full p-3 text-xs border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="Contoh: Waktu peluruhan zat radioaktif, pertumbuhan populasi, dll.">
+                    </div>
+
+                    <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition shadow-md flex items-center justify-center">
+                        <i class="fa-solid fa-floppy-disk mr-2"></i> Simpan Refleksi & Generasi Rangkuman Modul
+                    </button>
+                </form>
+
+                <!-- Output Summary Printable Card -->
+                <div id="reflectionSummaryCard" class="hidden mt-8 p-6 bg-slate-50 border border-slate-200 rounded-2xl space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-200 pb-3">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-sm">Rangkuman Pembelajaran Siswa</h3>
+                            <p class="text-[10px] text-slate-500">Status Modul: Completed</p>
+                        </div>
+                        <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full">Selesai</span>
+                    </div>
+                    <div class="text-xs space-y-2 text-slate-700">
+                        <p><strong>Skor Evaluasi HOTS:</strong> <span id="summaryScore" class="font-bold text-blue-600">0/40</span></p>
+                        <p><strong>Catatan Refleksi:</strong> Terekam dalam sistem lokal.</p>
+                    </div>
+                    <button onclick="window.print()" class="w-full py-2 bg-slate-800 text-white rounded-xl text-xs font-semibold hover:bg-slate-900 transition flex items-center justify-center">
+                        <i class="fa-solid fa-print mr-2"></i> Cetak / Simpan PDF Laporan
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 mt-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-2">
+            <p class="font-medium text-slate-300">Media Pembelajaran Matematika Interaktif — Materi Fungsi Logaritma</p>
+            <p class="text-[11px] text-slate-500">Dirancang dengan Pendekatan Pembelajaran Mendalam (Deep Learning) & Integrative Technology</p>
+        </div>
+    </footer>
+
+    <script>
+        // State variables
+        let currentProgress = {
+            apersepsi: false,
+            konsep: false,
+            konteks: false,
+            hots: false,
+            refleksi: false
+        };
+
+        let chartInstance = null;
+        let quizAnswers = {};
+        const quizCorrect = { q1: 2, q2: 1, q3: 0, q4: 1 }; // Option indexes
+
+        // Questions Data
+        const hotsQuestions = [
+            {
+                id: 'q1',
+                title: 'Soal 1: Perbandingan Bencana Alam (Magnitudo Gempa)',
+                context: 'Gempa Cianjur berkekuatan 5,6 MW dan Gempa Aceh berkekuatan 8,6 MW. Diketahui rumus magnitudo gempa $M = \log_{10}(A/A_0)$. Berapa kali lipat amplitudo gelombang gempa Aceh ($A_{\\text{Aceh}}$) dibanding gempa Cianjur ($A_{\\text{Cianjur}}$)?',
+                options: [
+                    '3 kali lipat',
+                    '30 kali lipat',
+                    '1.000 kali lipat',
+                    '3.000 kali lipat'
+                ],
+                explanation: 'Selisih magnitudo: $\\Delta M = 8,6 - 5,6 = 3,0$. Berdasarkan definisi logaritma basis 10: $3 = \\log_{10}(A_{\\text{Aceh}} / A_{\\text{Cianjur}}) \\iff A_{\\text{Aceh}} / A_{\\text{Cianjur}} = 10^3 = 1.000$ kali lipat.'
+            },
+            {
+                id: 'q2',
+                title: 'Soal 2: Kimia & Derajat Keasaman (pH Larutan)',
+                context: 'Larutan A memiliki $[H^+] = 1 \times 10^{-3} \\text{ M}$ (pH = 3). Larutan B memiliki $[H^+] = 1 \times 10^{-5} \\text{ M}$ (pH = 5). Manakah pernyataan konseptual yang benar terkait keasaman kedua larutan?',
+                options: [
+                    'Larutan B 100 kali lebih asam daripada Larutan A.',
+                    'Larutan A 100 kali lebih asam daripada Larutan B.',
+                    'Larutan A 2 kali lebih asam daripada Larutan B.',
+                    'Larutan B 2 kali lebih asam daripada Larutan A.'
+                ],
+                explanation: 'Larutan A memiliki $[H^+] = 10^{-3}$ dan Larutan B memliki $[H^+] = 10^{-5}$. Rasio konsentrasi ion hidrogen: $10^{-3} / 10^{-5} = 10^2 = 100$. Karena pH berbasis $-\\log$, semakin kecil angka pH, semakin tinggi konsentrasi ion $H^+$ (lebih asam).'
+            },
+            {
+                id: 'q3',
+                title: 'Soal 3: Akustik Lingkungan (Taraf Intensitas Bunyi)',
+                context: 'Sebuah mesin pabrik menghasilkan suara dengan taraf intensitas 70 dB ($TI_1 = 70 \\text{ dB}$). Jika 10 mesin identik dioperasikan bersamaan, berapa taraf intensitas bunyi totalnya ($TI_{10}$)? (Gunakan $TI_n = TI_1 + 10 \\cdot \\log_{10} n$)',
+                options: [
+                    '80 dB',
+                    '700 dB',
+                    '140 dB',
+                    '77 dB'
+                ],
+                explanation: '$TI_{10} = 70 + 10 \\cdot \\log_{10}(10) = 70 + 10(1) = 80 \\text{ dB}$. Penambahan 10 mesin tidak mengalikan desibel dengan 10, melainkan hanya menambah 10 dB!'
+            },
+            {
+                id: 'q4',
+                title: 'Soal 4: Finansial & Investasi (Bunga Majemuk)',
+                context: 'Modal awal Rp 10.000.000 diinvestasikan dengan suku bunga majemuk 10% per tahun ($M_t = M_0(1 + i)^t$). Diketahui $\\log_{10}(2) \\approx 0.3010$ dan $\\log_{10}(1.1) \\approx 0.0414$. Berapa lama waktu ($t$) yang dibutuhkan agar investasi menjadi 2 kali lipat ($2 M_0$)?',
+                options: [
+                    'Sekitar 5 tahun',
+                    'Sekitar 7,27 tahun',
+                    'Sekitar 10 tahun',
+                    'Sekitar 12 tahun'
+                ],
+                explanation: '$2 M_0 = M_0 (1.1)^t \\implies (1.1)^t = 2$. Terapkan logaritma basis 10 pada kedua ruas: $\\log(1.1^t) = \\log(2) \\implies t \\cdot \\log(1.1) = \\log(2) \\implies t = \\frac{\\log 2}{\\log 1.1} = \\frac{0.3010}{0.0414} \\approx 7.27$ tahun.'
+            }
+        ];
+
+        window.onload = function() {
+            renderMathInElement();
+            initGraphChart();
+            renderHOTSQuiz();
+            calculateRichter();
+            calculatePH();
+            calculateSound();
+            updateProgress();
+        };
+
+        function renderMathInElement() {
+            if (window.katex) {
+                // KaTeX render helper for LaTeX standard strings
+                const mathElements = [
+                    { id: 'def-math-1', math: 'a^c = b \\iff \\log_a b = c' },
+                    { id: 'def-math-2', math: 'f(x) = a \\cdot \\log_b(x - c) + d' }
+                ];
+                mathElements.forEach(item => {
+                    const el = document.getElementById(item.id);
+                    if (el) {
+                        try {
+                            katex.render(item.math, el, { displayMode: true });
+                        } catch (e) {
+                            console.error(e);
+                        }
+                    }
+                });
+            }
+        }
+
+        // Tab Switching Engine
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.add('text-blue-100');
+            });
+
+            const activeTab = document.getElementById(tabId);
+            if (activeTab) activeTab.classList.remove('hidden');
+
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+                activeBtn.classList.remove('text-blue-100');
+            }
+
+            // Mark feature engagement progress
+            if (tabId === 'tab-konsep') {
+                currentProgress.konsep = true;
+                setTimeout(() => { if (chartInstance) chartInstance.resize(); }, 100);
+            }
+            if (tabId === 'tab-konteks') currentProgress.konteks = true;
+            if (tabId === 'tab-hots') currentProgress.hots = true;
+            if (tabId === 'tab-refleksi') currentProgress.refleksi = true;
+
+            updateProgress();
+        }
+
+        function markStepRead(step) {
+            currentProgress[step] = true;
+            updateProgress();
+            switchTab('tab-konsep');
+        }
+
+        function updateProgress() {
+            const keys = Object.keys(currentProgress);
+            const completed = keys.filter(k => currentProgress[k]).length;
+            const percentage = Math.round((completed / keys.length) * 100);
+
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('progressPercent').innerText = percentage + '%';
+        }
+
+        function initGraphChart() {
+            const ctx = document.getElementById('logChart').getContext('2d');
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [
+                        {
+                            label: 'f(x)',
+                            data: [],
+                            borderColor: '#2563eb',
+                            borderWidth: 3,
+                            pointRadius: 0,
+                            fill: false,
+                            tension: 0.2
+                        },
+                        {
+                            label: 'Asimtot Tegak',
+                            data: [],
+                            borderColor: '#f43f5e',
+                            borderWidth: 2,
+                            borderDash: [6, 6],
+                            pointRadius: 0,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            min: -5,
+                            max: 10,
+                            title: { display: true, text: 'Sumbu X', font: { weight: 'bold' } },
+                            grid: { color: '#e2e8f0' }
+                        },
+                        y: {
+                            min: -6,
+                            max: 6,
+                            title: { display: true, text: 'Sumbu Y', font: { weight: 'bold' } },
+                            grid: { color: '#e2e8f0' }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `(${context.parsed.x.toFixed(2)}, ${context.parsed.y.toFixed(2)})`;
+                                }
+                            }
+                        },
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            updateGraph();
+        }
+
+        function updateGraph() {
+            const b = parseFloat(document.getElementById('slider-b').value);
+            const a = parseFloat(document.getElementById('slider-a').value);
+            const c = parseFloat(document.getElementById('slider-c').value);
+            const d = parseFloat(document.getElementById('slider-d').value);
+
+            // Update Text Displays
+            document.getElementById('val-b').innerText = b;
+            document.getElementById('val-a').innerText = a;
+            document.getElementById('val-c').innerText = c;
+            document.getElementById('val-d').innerText = d;
+
+            // Live Math Display
+            document.getElementById('math-live-eq').innerText = `f(x) = ${a} · log₍${b}₎(x ${c >= 0 ? '- ' + c : '+ ' + Math.abs(c)}) ${d >= 0 ? '+ ' + d : '- ' + Math.abs(d)}`;
+
+            // Domain & Asymptote info
+            document.getElementById('info-domain').innerText = `x > ${c}`;
+            document.getElementById('info-asymptote').innerText = `x = ${c}`;
+
+            // X-intercept calculation: a * log_b(x - c) + d = 0 => log_b(x - c) = -d/a => x - c = b^(-d/a) => x = c + b^(-d/a)
+            let xIntercept = null;
+            if (a !== 0) {
+                xIntercept = c + Math.pow(b, -d / a);
+                document.getElementById('info-xintercept').innerText = `(${xIntercept.toFixed(2)}, 0)`;
+            } else {
+                document.getElementById('info-xintercept').innerText = 'Tidak Ada';
+            }
+
+            // Generate Log curve points
+            const pointsCurve = [];
+            const minX = c + 0.001;
+            const maxX = Math.max(10, c + 15);
+            const step = (maxX - minX) / 200;
+
+            for (let x = minX; x <= maxX; x += step) {
+                // log_b(arg) = ln(arg) / ln(b)
+                const arg = x - c;
+                if (arg > 0) {
+                    const y = a * (Math.log(arg) / Math.log(b)) + d;
+                    if (y >= -15 && y <= 15) {
+                        pointsCurve.push({ x: x, y: y });
+                    }
+                }
+            }
+
+            // Asymptote line points
+            const pointsAsymptote = [
+                { x: c, y: -10 },
+                { x: c, y: 10 }
+            ];
+
+            // Update Chart limits dynamically
+            chartInstance.options.scales.x.min = Math.min(-5, c - 2);
+            chartInstance.options.scales.x.max = Math.max(10, c + 8);
+            chartInstance.data.datasets[0].data = pointsCurve;
+            chartInstance.data.datasets[1].data = pointsAsymptote;
+            chartInstance.update();
+        }
+
+        function resetGraphParams() {
+            document.getElementById('slider-b').value = 2;
+            document.getElementById('slider-a').value = 1;
+            document.getElementById('slider-c').value = 0;
+            document.getElementById('slider-d').value = 0;
+            updateGraph();
+        }
+
+        function calculateRichter() {
+            const mA = parseFloat(document.getElementById('slider-richter-a').value);
+            const mB = parseFloat(document.getElementById('slider-richter-b').value);
+
+            document.getElementById('val-richter-a').innerText = mA.toFixed(1) + ' MW';
+            document.getElementById('val-richter-b').innerText = mB.toFixed(1) + ' MW';
+
+            const diff = mB - mA;
+            const ratio = Math.pow(10, diff);
+
+            document.getElementById('result-richter').innerText = ratio >= 1 ? ratio.toLocaleString('id-ID', { maximumFractionDigits: 1 }) + 'x Lipat' : (1/ratio).toLocaleString('id-ID', { maximumFractionDigits: 1 }) + 'x Lebih Kecil';
+        }
+
+        function calculatePH() {
+            const exponent = parseFloat(document.getElementById('slider-ph-h').value);
+            document.getElementById('val-ph-h').innerText = `1.0e-${exponent.toFixed(1)} M`;
+
+            const pH = exponent; // -log10(10^-exp) = exp
+            document.getElementById('result-ph-val').innerText = pH.toFixed(2);
+
+            const badge = document.getElementById('ph-badge');
+            const typeLabel = document.getElementById('result-ph-type');
+
+            if (pH < 3) {
+                badge.className = "mt-4 p-4 rounded-2xl text-white text-center transition-colors duration-300 shadow-md bg-rose-600";
+                typeLabel.innerText = "Asam Sangat Kuat";
+            } else if (pH < 7) {
+                badge.className = "mt-4 p-4 rounded-2xl text-white text-center transition-colors duration-300 shadow-md bg-amber-500";
+                typeLabel.innerText = "Asam Lemah";
+            } else if (Math.abs(pH - 7) < 0.1) {
+                badge.className = "mt-4 p-4 rounded-2xl text-white text-center transition-colors duration-300 shadow-md bg-emerald-600";
+                typeLabel.innerText = "Netral (Air Murni)";
+            } else if (pH < 11) {
+                badge.className = "mt-4 p-4 rounded-2xl text-white text-center transition-colors duration-300 shadow-md bg-sky-500";
+                typeLabel.innerText = "Basa Lemah";
+            } else {
+                badge.className = "mt-4 p-4 rounded-2xl text-white text-center transition-colors duration-300 shadow-md bg-indigo-700";
+                typeLabel.innerText = "Basa Sangat Kuat";
+            }
+        }
+
+        function calculateSound() {
+            const exp = parseInt(document.getElementById('slider-sound-exp').value);
+            document.getElementById('val-sound-exp').innerText = `10^${exp}`;
+
+            // TI = 10 * log10( 10^exp / 10^-12 ) = 10 * (exp - (-12)) = 10 * (exp + 12)
+            const dB = 10 * (exp + 12);
+            document.getElementById('result-sound-db').innerText = `${dB} dB`;
+
+            const exampleEl = document.getElementById('result-sound-example');
+            if (dB <= 20) exampleEl.innerText = "Setara: Bisikan Halus / Daun Berguguran";
+            else if (dB <= 50) exampleEl.innerText = "Setara: Perpustakaan Tenang / Hujan Rintik";
+            else if (dB <= 70) exampleEl.innerText = "Setara: Percakapan Normal / Restoran";
+            else if (dB <= 90) exampleEl.innerText = "Setara: Lalu Lintas Padat / Mesin Pemotong Rumput";
+            else if (dB <= 110) exampleEl.innerText = "Setara: Konser Musik / Siren Ambulans";
+            else exampleEl.innerText = "Setara: Pesawat Jet Lepas Landas (Batas Nyeri)";
+        }
+
+        function renderHOTSQuiz() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = '';
+
+            hotsQuestions.forEach((q, qIndex) => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4";
+                card.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <h3 class="font-bold text-slate-800 text-sm sm:text-base">${q.title}</h3>
+                        <span id="badge-${q.id}" class="hidden px-2.5 py-1 text-[10px] font-bold rounded-full uppercase"></span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed bg-slate-50 p-3.5 rounded-xl border border-slate-100">${q.context}</p>
+
+                    <div class="space-y-2 mt-3">
+                        ${q.options.map((opt, optIndex) => `
+                            <label class="flex items-center space-x-3 p-3 rounded-xl border border-slate-200 hover:bg-blue-50/50 cursor-pointer transition text-xs text-slate-700">
+                                <input type="radio" name="${q.id}" value="${optIndex}" onchange="checkAnswer('${q.id}', ${optIndex})" class="accent-blue-600">
+                                <span>${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+
+                    <div id="explain-${q.id}" class="hidden mt-4 p-4 rounded-xl text-xs space-y-1"></div>
+                `;
+                container.appendChild(card);
+            });
+
+            if (window.katex) {
+                setTimeout(() => {
+                    katex.render("M = \\log_{10}(A/A_0)", document.body);
+                }, 100);
+            }
+        }
+
+        function checkAnswer(qId, selectedIdx) {
+            quizAnswers[qId] = selectedIdx;
+
+            const correctIdx = quizCorrect[qId];
+            const badge = document.getElementById(`badge-${qId}`);
+            const explain = document.getElementById(`explain-${qId}`);
+            const qData = hotsQuestions.find(q => q.id === qId);
+
+            badge.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-700', 'bg-rose-100', 'text-rose-700');
+            explain.classList.remove('hidden', 'bg-emerald-50', 'text-emerald-900', 'border-emerald-200', 'bg-rose-50', 'text-rose-900', 'border-rose-200');
+
+            if (selectedIdx === correctIdx) {
+                badge.innerText = "Jawaban Tepat (+10)";
+                badge.classList.add('bg-emerald-100', 'text-emerald-700');
+
+                explain.classList.add('bg-emerald-50', 'text-emerald-900', 'border', 'border-emerald-200');
+                explain.innerHTML = `<strong><i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Penjelasan HOTS:</strong> ${qData.explanation}`;
+            } else {
+                badge.innerText = "Belum Tepat";
+                badge.classList.add('bg-rose-100', 'text-rose-700');
+
+                explain.classList.add('bg-rose-50', 'text-rose-900', 'border', 'border-rose-200');
+                explain.innerHTML = `<strong><i class="fa-solid fa-circle-xmark text-rose-600 mr-1"></i> Mari Analisis Kembali:</strong> ${qData.explanation}`;
+            }
+
+            // Calculate total HOTS score
+            let score = 0;
+            Object.keys(quizAnswers).forEach(key => {
+                if (quizAnswers[key] === quizCorrect[key]) score += 10;
+            });
+
+            document.getElementById('quizScoreText').innerText = `${score} / 40`;
+            document.getElementById('summaryScore').innerText = `${score} / 40`;
+        }
+
+        function handleReflectionSubmit(e) {
+            e.preventDefault();
+            document.getElementById('reflectionSummaryCard').classList.remove('hidden');
+            currentProgress.refleksi = true;
+            updateProgress();
+
+            alert('Refleksi dan jurnal pembelajaran Anda berhasil disimpan!');
+        }
+    </script>
+</body>
+</html>
